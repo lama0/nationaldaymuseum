@@ -3,318 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>معرض اليوم الوطني الفني 3D</title>
+    <title>معرض اليوم الوطني الفني</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
         * { font-family: 'Tajawal', sans-serif; }
-        
-        #gallery-3d {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 10;
-        }
-
-        .manga-bubble {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
-            border: 2px solid #10b981;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
     </style>
 </head>
-<body class="bg-emerald-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between overflow-x-hidden">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between antialiased selection:bg-emerald-500 selection:text-white">
 
     <div id="landing-page" class="flex flex-col min-h-screen justify-between transition-opacity duration-700">
-        <header class="w-full bg-white/80 backdrop-blur-md border-b border-emerald-100 py-4 px-6 sticky top-0 z-20">
+        <header class="w-full bg-slate-800/80 backdrop-blur-md border-b border-slate-700 py-4 px-6 sticky top-0 z-20">
             <div class="max-w-6xl mx-auto flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-14 h-14 rounded-2xl bg-emerald-600 text-white font-bold flex items-center justify-center text-2xl shadow-md">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white font-bold flex items-center justify-center text-xl shadow-lg shadow-emerald-600/30">
                         🇸🇦
                     </div>
                     <div>
-                        <h1 class="font-bold text-emerald-950 text-lg md:text-xl">
-                            معرض اليوم الوطني الفني <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">الجولة الافتراضية 3D</span>
+                        <h1 class="font-bold text-white text-lg md:text-xl flex items-center gap-2">
+                            معرض اليوم الوطني الفني
                         </h1>
-                        <p class="text-xs text-slate-500">إعداد الطالبة: لمى الغامدي | إشراف المعلمة: أمل</p>
+                        <p class="text-xs text-slate-400">إعداد الطالبة: لمى الغامدي | إشراف المعلمة: أمل</p>
                     </div>
                 </div>
             </div>
         </header>
 
         <main class="flex-1 max-w-4xl mx-auto w-full px-4 py-8 flex flex-col items-center justify-center text-center">
-            <div class="relative w-full rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-slate-900 min-h-[400px] flex items-center justify-center p-8">
-                <div class="relative z-10 max-w-2xl flex flex-col items-center">
-                    <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-500/20 backdrop-blur-md border border-emerald-400/30 text-emerald-200 text-sm font-medium mb-4">
-                        🇸🇦 وطن يُحكى بفرشاة وألوان
-                    </span>
-                    <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
-                        معرض نحلم ونحقق الفني
-                    </h2>
-                    <p class="text-slate-200 text-base md:text-lg mb-8 leading-relaxed font-light">
-                        انضمي إلى جولة موجهة برفق مرشدة المعرض للاطلاع على لوحات طالباتنا المبدعات بمناسبة اليوم الوطني.
-                    </p>
+            <div class="relative w-full rounded-3xl overflow-hidden shadow-2xl border border-slate-700 bg-slate-800/50 p-8 md:p-12 flex flex-col items-center">
+                <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-6">
+                    🇸🇦 وطن يُحكى بفرشاة وألوان
+                </span>
+                
+                <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
+                    معرض نحلم ونحقق الفني
+                </h2>
+                
+                <p class="text-slate-300 text-base md:text-lg mb-8 max-w-2xl leading-relaxed">
+                    مرحباً بكم في العرض التفاعلي الخاص بكتالوج لوحات طالباتنا المبدعات بمناسبة اليوم الوطني المجيد.
+                </p>
 
-                    <button onclick="enter3DGallery()" class="group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 text-white font-bold text-lg shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:scale-105 active:scale-95 transition-all duration-300">
-                        <span>دخول المعرض وبدء الجولة 🎨</span>
-                    </button>
-                </div>
+                <button onclick="startGallery()" class="group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-lg shadow-lg shadow-emerald-600/30 hover:scale-105 active:scale-95 transition-all duration-300">
+                    <span>دخول المعرض الفني 🎨</span>
+                </button>
             </div>
         </main>
 
-        <footer class="w-full bg-white/60 border-t border-emerald-100 py-4 text-center text-xs text-slate-500">
+        <footer class="w-full bg-slate-800/40 border-t border-slate-800 py-4 text-center text-xs text-slate-500">
             معرض اليوم الوطني الفني © 2026 - إعداد الطالبة: لمى الغامدي | إشراف المعلمة: أمل
         </footer>
     </div>
 
-    <div id="gallery-3d">
-        <div class="absolute top-4 left-4 right-4 z-50 flex justify-between items-center pointer-events-none">
-            <div class="bg-slate-900/80 backdrop-blur-md text-white px-4 py-2 rounded-xl text-xs md:text-sm border border-slate-700 pointer-events-auto flex items-center gap-3">
-                <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>المعرض الافتراضي 3D - الجولة الإرشادية</span>
+    <div id="gallery-view" class="hidden fixed inset-0 bg-slate-950 z-50 flex flex-col justify-between p-4 md:p-8">
+        <div class="flex justify-between items-center max-w-5xl mx-auto w-full">
+            <div class="flex items-center gap-2 text-emerald-400 font-bold text-sm">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>عرض اللوحات الفنية</span>
             </div>
-            <button onclick="exit3DGallery()" class="bg-red-500/90 hover:bg-red-600 text-white font-bold px-4 py-2 rounded-xl text-sm backdrop-blur-md transition-all shadow-lg pointer-events-auto">
+            <button onclick="closeGallery()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-sm transition">
                 ✕ خروج
             </button>
         </div>
 
-        <div id="guide-ui" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-2xl w-[92%] pointer-events-auto flex flex-col items-center gap-3">
-            <div class="manga-bubble p-4 text-slate-900 w-full text-center relative">
-                <div class="text-xs text-emerald-700 font-bold mb-1 flex items-center justify-center gap-1">
-                    <span>👩‍🎓 مرشدة المعرض (طالبة المدرسة)</span>
+        <div class="max-w-4xl mx-auto w-full my-auto flex flex-col items-center">
+            <div class="relative w-full aspect-video md:aspect-[16/9] bg-slate-900 rounded-3xl border border-slate-800 overflow-hidden shadow-2xl flex items-center justify-center p-4">
+                <div class="w-full h-full rounded-2xl overflow-hidden relative flex items-center justify-center bg-slate-800">
+                    <img id="artwork-image" src="" alt="اللوحة الفنية" class="w-full h-full object-contain">
                 </div>
-                <p id="guide-text" class="text-sm md:text-base font-semibold text-emerald-950">
-                    أهلاً وسهلاً بكم في معرضنا الفني! اضغطي على زر "بدء الجولة" لنستكشف اللوحات معاً.
-                </p>
             </div>
 
-            <div class="flex items-center gap-4 bg-slate-900/90 backdrop-blur-md px-6 py-3 rounded-2xl border border-slate-700 shadow-xl">
-                <button id="prev-btn" onclick="prevArtwork()" class="hidden px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs md:text-sm rounded-xl font-bold transition">
-                    ← اللوحة السابقة
-                </button>
-                
-                <button id="action-btn" onclick="startGuidedTour()" class="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-extrabold rounded-xl shadow-lg transition">
-                    بدء الجولة 🚀
-                </button>
-
-                <button id="next-btn" onclick="nextArtwork()" class="hidden px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs md:text-sm rounded-xl font-bold transition">
-                    اللوحة التالية →
-                </button>
+            <div class="mt-6 text-center max-w-xl">
+                <h3 id="artwork-title" class="text-2xl font-bold text-white mb-1"></h3>
+                <p id="artwork-artist" class="text-emerald-400 font-medium text-sm mb-3"></p>
+                <p id="artwork-desc" class="text-slate-400 text-sm leading-relaxed"></p>
             </div>
         </div>
 
-        <a-scene embedded class="w-full h-full">
+        <div class="max-w-md mx-auto w-full flex items-center justify-between gap-4 bg-slate-900/80 backdrop-blur-md p-3 rounded-2xl border border-slate-800">
+            <button id="prev-btn" onclick="prevArtwork()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-sm font-bold transition disabled:opacity-40">
+                السابق
+            </button>
+            
+            <span id="gallery-counter" class="text-xs font-semibold text-slate-400"></span>
 
-            <a-entity id="camera-rig" position="0.5 4.2 8.8" rotation="-2 0 0">
-                <a-camera look-controls="enabled: false" wasd-controls="enabled: false" fov="50"></a-camera>
-            </a-entity>
-
-            <a-light type="ambient" color="#ffffff" intensity="1.2"></a-light>
-            <a-light type="directional" position="3 8 5" intensity="0.7" color="#ffffff"></a-light>
-
-            <a-plane position="0 0 0" rotation="-90 0 0" width="35" height="20" color="#f1f5f9"></a-plane>
-
-            <a-plane position="0 6.5 -6" width="35" height="15" color="#a7f3d0"></a-plane>
-
-            <a-entity position="-8.5 0 -5.2">
-                <a-cylinder position="0 0.6 0" radius="0.4" height="1.2" color="#047857"></a-cylinder>
-                <a-sphere position="0 1.5 0" radius="0.7" color="#10b981"></a-sphere>
-            </a-entity>
-
-            <a-entity position="-2.5 0 -5.2">
-                <a-cylinder position="0 0.6 0" radius="0.4" height="1.2" color="#047857"></a-cylinder>
-                <a-sphere position="0 1.5 0" radius="0.7" color="#10b981"></a-sphere>
-            </a-entity>
-
-            <a-entity position="3.5 0 -5.2">
-                <a-cylinder position="0 0.6 0" radius="0.4" height="1.2" color="#047857"></a-cylinder>
-                <a-sphere position="0 1.5 0" radius="0.7" color="#10b981"></a-sphere>
-            </a-entity>
-
-            <a-entity position="9.5 0 -5.2">
-                <a-cylinder position="0 0.6 0" radius="0.4" height="1.2" color="#047857"></a-cylinder>
-                <a-sphere position="0 1.5 0" radius="0.7" color="#10b981"></a-sphere>
-            </a-entity>
-
-            <a-entity id="art-1" position="-5.5 5.2 -5.7">
-                <a-box width="3.2" height="2.2" depth="0.1" color="#1e293b">
-                    <a-plane position="0 0 0.06" width="3.0" height="2.0" color="#0284c7"></a-plane>
-                </a-box>
-                <a-box position="0 -2.9 0.3" width="2.4" height="1.4" depth="0.9" color="#ffffff"></a-box>
-            </a-entity>
-
-            <a-entity id="art-2" position="0.5 5.2 -5.7">
-                <a-box width="3.4" height="2.3" depth="0.1" color="#1e293b">
-                    <a-plane position="0 0 0.06" width="3.2" height="2.1" color="#059669"></a-plane>
-                </a-box>
-                <a-box position="0 -2.9 0.3" width="2.6" height="1.4" depth="0.9" color="#ffffff"></a-box>
-            </a-entity>
-
-            <a-entity id="art-3" position="6.5 5.2 -5.7">
-                <a-box width="3.2" height="2.2" depth="0.1" color="#1e293b">
-                    <a-plane position="0 0 0.06" width="3.0" height="2.0" color="#d97706"></a-plane>
-                </a-box>
-                <a-box position="0 -2.9 0.3" width="2.4" height="1.4" depth="0.9" color="#ffffff"></a-box>
-            </a-entity>
-
-            <a-entity id="guide-avatar" position="-0.5 1.8 -4.5">
-                <a-sphere position="0 1.25 0" radius="0.28" color="#fde047"></a-sphere>
-                <a-sphere position="0 1.3 -0.05" radius="0.32" color="#3d2314"></a-sphere>
-                <a-cylinder position="0 0.95 0" radius="0.18" height="0.12" color="#ffffff"></a-cylinder>
-                <a-cylinder position="0 0.75 0" radius-top="0.22" radius-bottom="0.28" height="0.3" color="#ffffff"></a-cylinder>
-                <a-cone position="0 0.1 0" radius-top="0.28" radius-bottom="0.48" height="1.1" color="#1e3a8a"></a-cone>
-                <a-cylinder position="-0.32 0.65 0" radius="0.07" height="0.5" color="#1e3a8a" rotation="0 0 20"></a-cylinder>
-                <a-cylinder position="0.32 0.65 0" radius="0.07" height="0.5" color="#1e3a8a" rotation="0 0 -20"></a-cylinder>
-            </a-entity>
-
-        </a-scene>
+            <button id="next-btn" onclick="nextArtwork()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-bold transition">
+                التالي
+            </button>
+        </div>
     </div>
 
     <script>
-        const artworksData = [
+        // بيانات اللوحات المعروضة
+        const artworks = [
             {
                 title: "أصالة الماضي وحداثة الحاضر",
-                artist: "سارة محمد",
-                camPos: "-5.5 4.8 0.2",
-                guidePos: "-8.0 1.8 -4.5",
-                speech: "اللوحة الأولى بعنوان 'أصالة الماضي وحداثة الحاضر' للطالبة سارة محمد. استخدمت فيها الألوان الزيتية لإبراز التناغم بين التراث السعودي والرؤية المعاصرة."
+                artist: "إعداد الطالبة: سارة محمد",
+                desc: "عمل فني بالألوان الزيتية يجسد العراقة والتطور المعماري في المملكة.",
+                image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=1200&q=80"
             },
             {
                 title: "طبيعة وشموخ وطن",
-                artist: "ريم عبد الله",
-                camPos: "0.5 4.8 0.2",
-                guidePos: "-2.0 1.8 -4.5",
-                speech: "اللوحة الثانية للرائعة ريم عبد الله! تعكس طبيعة المملكة بألوان الأكريليك المشرقة وتعبّر عن الحيوية والجمال بريشة متميزة."
+                artist: "إعداد الطالبة: ريم عبد الله",
+                desc: "لوحة تعبر عن تضاريس المملكة وتنوع الطبيعة بريشة الطالبة ريم.",
+                image: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1200&q=80"
             },
             {
                 title: "رؤية مستقبلية زاهية",
-                artist: "شهد خالد",
-                camPos: "6.5 4.8 0.2",
-                guidePos: "4.0 1.8 -4.5",
-                speech: "وهنا اللوحة الثالثة المبدعة لشهد خالد! عمل تجريدي يعبر عن طموحاتنا المستقبلية نحو اليوم الوطني وتطلعات الوطن الزاهرة."
+                artist: "إعداد الطالبة: شهد خالد",
+                desc: "تعبير تجريدي مبدع عن تطلعات اليوم الوطني ورؤية 2030 الطموحة.",
+                image: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1200&q=80"
             }
         ];
 
-        let currentStep = -1;
-        let synth = window.speechSynthesis;
+        let currentIndex = 0;
 
-        function enter3DGallery() {
-            document.getElementById('landing-page').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('landing-page').style.display = 'none';
-                document.getElementById('gallery-3d').style.display = 'block';
-                resetView();
-            }, 500);
+        function startGallery() {
+            document.getElementById('landing-page').style.display = 'none';
+            document.getElementById('gallery-view').classList.remove('hidden');
+            showArtwork(0);
         }
 
-        function exit3DGallery() {
-            stopSpeech();
-            document.getElementById('gallery-3d').style.display = 'none';
+        function closeGallery() {
+            document.getElementById('gallery-view').classList.add('hidden');
             document.getElementById('landing-page').style.display = 'flex';
-            setTimeout(() => {
-                document.getElementById('landing-page').style.opacity = '1';
-            }, 50);
         }
 
-        function resetView() {
-            currentStep = -1;
-            const cam = document.getElementById('camera-rig');
-            const avatar = document.getElementById('guide-avatar');
+        function showArtwork(index) {
+            currentIndex = index;
+            const item = artworks[currentIndex];
+
+            document.getElementById('artwork-image').src = item.image;
+            document.getElementById('artwork-title').innerText = item.title;
+            document.getElementById('artwork-artist').innerText = item.artist;
+            document.getElementById('artwork-desc').innerText = item.desc;
+
+            document.getElementById('gallery-counter').innerText = `${currentIndex + 1} من ${artworks.length}`;
+
+            document.getElementById('prev-btn').disabled = (currentIndex === 0);
             
-            cam.setAttribute('position', '0.5 4.2 8.8');
-            avatar.setAttribute('position', '-0.5 1.8 -4.5');
-
-            document.getElementById('guide-text').innerText = "أهلاً وسهلاً بكم في معرض اليوم الوطني الفني! اضغطي على زر 'بدء الجولة' لنبدأ استكشاف اللوحات معاً 🇸🇦";
-            
-            document.getElementById('prev-btn').classList.add('hidden');
-            document.getElementById('next-btn').classList.add('hidden');
-            document.getElementById('action-btn').classList.remove('hidden');
-            document.getElementById('action-btn').innerText = "بدء الجولة 🚀";
-            speakText("أهلاً وسهلاً بكم في معرض اليوم الوطني الفني! اضغطي على زر بدء الجولة لنبدأ استكشاف اللوحات معاً.");
-        }
-
-        function startGuidedTour() {
-            currentStep = 0;
-            document.getElementById('action-btn').classList.add('hidden');
-            document.getElementById('prev-btn').classList.remove('hidden');
-            document.getElementById('next-btn').classList.remove('hidden');
-            goToArtwork(0);
-        }
-
-        function goToArtwork(index) {
-            stopSpeech();
-            currentStep = index;
-            const item = artworksData[currentStep];
-
-            const cam = document.getElementById('camera-rig');
-            const avatar = document.getElementById('guide-avatar');
-
-            cam.setAttribute('animation', `property: position; to: ${item.camPos}; dur: 1200; easing: easeInOutQuad`);
-            avatar.setAttribute('animation', `property: position; to: ${item.guidePos}; dur: 1200; easing: easeInOutQuad`);
-
-            document.getElementById('guide-text').innerHTML = `<b class="text-emerald-700">${item.title}</b> - رسمة: ${item.artist}<br><span class="text-xs font-normal">${item.speech}</span>`;
-            speakText(item.speech);
-
-            document.getElementById('prev-btn').disabled = (currentStep === 0);
-            if (currentStep === artworksData.length - 1) {
-                document.getElementById('next-btn').innerText = "الختام ✨";
+            if (currentIndex === artworks.length - 1) {
+                document.getElementById('next-btn').innerText = "إنهاء العرض ✨";
             } else {
-                document.getElementById('next-btn').innerText = "اللوحة التالية →";
+                document.getElementById('next-btn').innerText = "التالي";
             }
         }
 
         function nextArtwork() {
-            if (currentStep < artworksData.length - 1) {
-                goToArtwork(currentStep + 1);
+            if (currentIndex < artworks.length - 1) {
+                showArtwork(currentIndex + 1);
             } else {
-                finishTour();
+                closeGallery();
             }
         }
 
         function prevArtwork() {
-            if (currentStep > 0) {
-                goToArtwork(currentStep - 1);
-            }
-        }
-
-        function finishTour() {
-            stopSpeech();
-            const cam = document.getElementById('camera-rig');
-            const avatar = document.getElementById('guide-avatar');
-
-            cam.setAttribute('animation', 'property: position; to: 0.5 4.2 8.8; dur: 1200; easing: easeInOutQuad');
-            avatar.setAttribute('animation', 'property: position; to: 0.5 1.8 -4.5; dur: 1200; easing: easeInOutQuad');
-
-            const closingText = "ختاماً، نشكركم على زيارة معرض اليوم الوطني الفني. دمت يا وطننا شامخاً ومعطاءً، ونحلم ونحقق دائماً! 🇸🇦✨";
-            document.getElementById('guide-text').innerText = closingText;
-            speakText(closingText);
-
-            document.getElementById('prev-btn').classList.add('hidden');
-            document.getElementById('next-btn').classList.add('hidden');
-            document.getElementById('action-btn').classList.remove('hidden');
-            document.getElementById('action-btn').innerText = "إعادة الجولة 🔄";
-            document.getElementById('action-btn').onclick = startGuidedTour;
-        }
-
-        function speakText(text) {
-            if ('speechSynthesis' in window) {
-                synth.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'ar-SA';
-                utterance.rate = 0.95;
-                synth.speak(utterance);
-            }
-        }
-
-        function stopSpeech() {
-            if ('speechSynthesis' in window) {
-                synth.cancel();
+            if (currentIndex > 0) {
+                showArtwork(currentIndex - 1);
             }
         }
     </script>
