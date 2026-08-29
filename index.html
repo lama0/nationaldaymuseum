@@ -3,390 +3,338 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>معرض اليوم الوطني الفني</title>
-    <!-- Tailwind CSS -->
+    <title>معرض اليوم الوطني الفني 3D</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-
     <style>
-        body {
-            font-family: 'Tajawal', sans-serif;
-            background: linear-gradient(135deg, #f0f7f4 0%, #e1efe6 50%, #d4e7dc 100%);
-            color: #2d3748;
-            overflow-x: hidden;
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+        * { font-family: 'Tajawal', sans-serif; }
+        body { margin: 0; overflow: hidden; background-color: #0f172a; }
+        
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
         }
 
         .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 10px 30px rgba(46, 91, 62, 0.08);
-        }
-
-        /* Manga Speech Bubble */
-        .manga-bubble {
-            position: absolute;
-            bottom: 105%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #ffffff;
-            color: #1b4332;
-            border: 2px solid #b7e4c7;
-            border-radius: 20px;
-            padding: 12px 16px;
-            font-weight: 700;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-            width: 260px;
-            font-size: 0.85rem;
-            line-height: 1.4;
-            text-align: center;
-            z-index: 50;
-            transition: all 0.3s ease;
-        }
-
-        .manga-bubble::after {
-            content: '';
-            position: absolute;
-            bottom: -14px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-width: 14px 10px 0 10px;
-            border-style: solid;
-            border-color: #ffffff transparent transparent transparent;
-            display: block;
-            width: 0;
-            z-index: 10;
-        }
-
-        .manga-bubble::before {
-            content: '';
-            position: absolute;
-            bottom: -17px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-width: 16px 12px 0 12px;
-            border-style: solid;
-            border-color: #b7e4c7 transparent transparent transparent;
-            display: block;
-            width: 0;
-            z-index: 9;
-        }
-
-        .gallery-wall {
-            background: linear-gradient(to bottom, #edf6f2, #d8ece0);
-        }
-
-        .gallery-frame {
-            box-shadow: 0 20px 40px rgba(40, 80, 55, 0.12), 0 0 20px rgba(255, 255, 255, 0.8);
-        }
-
-        @keyframes animeIdle {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
-        }
-        .anime-character-container {
-            animation: animeIdle 4s ease-in-out infinite;
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f0f7f4;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #b7e4c7;
-            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
     </style>
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Tween.js for Smooth Camera Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
 </head>
-<body class="min-h-screen flex flex-col justify-between">
+<body class="text-slate-100 antialiased selection:bg-emerald-500 selection:text-white">
 
-    <!-- Header Navigation Bar -->
-    <header class="w-full glass-panel sticky top-0 z-40 px-6 py-3 flex justify-between items-center">
-        <div class="flex items-center gap-4">
-            <!-- مكان شعار المدرسة -->
-            <div class="w-12 h-12 rounded-2xl bg-white p-1 shadow-sm border border-emerald-100 flex items-center justify-center overflow-hidden">
-                <img src="logo.png" alt="شعار المدرسة" class="w-8 h-8 opacity-80">
+    <!-- Three.js Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <!-- UI Overlay Layer -->
+    <div class="relative z-10 w-full h-screen flex flex-col justify-between p-4 md:p-6 pointer-events-none">
+        
+        <!-- Header -->
+        <header class="flex justify-between items-center max-w-6xl mx-auto w-full glass-panel p-4 rounded-2xl pointer-events-auto">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-lg shadow-lg">
+                    🇸🇦
+                </div>
+                <div>
+                    <h1 class="font-bold text-white text-base md:text-lg">معرض اليوم الوطني الفني</h1>
+                    <p class="text-xs text-slate-400">إعداد الطالبة: لمى الغامدي | إشراف المعلمة: أمل</p>
+                </div>
             </div>
-            <div>
-                <h1 class="font-bold text-lg md:text-xl text-emerald-950 leading-tight">معرض اليوم الوطني الفني 🇸🇦</h1>
-                <p class="text-xs text-emerald-700">إعداد الطالبة: لمى الغامدي | إشراف المعلمة: أمل</p>
+            <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-xs text-emerald-400 font-semibold hidden md:inline">جولة تفاعلية ثلاثية الأبعاد</span>
+            </div>
+        </header>
+
+        <!-- Bottom Controls & Guide Dialogue Box -->
+        <div class="max-w-2xl mx-auto w-full flex flex-col items-center gap-3 pointer-events-auto mb-2">
+            
+            <!-- Dialogue Box -->
+            <div class="glass-panel p-4 rounded-2xl w-full text-center border-t-2 border-emerald-500 shadow-2xl">
+                <div class="text-xs text-emerald-400 font-bold mb-1 flex items-center justify-center gap-1">
+                    <span>👩‍🎓 مرشدة المعرض</span>
+                </div>
+                <p id="guide-text" class="text-sm md:text-base font-medium text-slate-200">
+                    أهلاً بكِ في معرض اليوم الوطني الفني! اضغطي على زر "بدء الجولة" لنطوف معاً بين اللوحات.
+                </p>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex items-center gap-3 bg-slate-900/90 backdrop-blur-md p-2 rounded-2xl border border-slate-700 shadow-xl">
+                <button id="prev-btn" onclick="prevArtwork()" class="hidden px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs md:text-sm font-bold transition disabled:opacity-40">
+                    ← اللوحة السابقة
+                </button>
+                
+                <button id="action-btn" onclick="startTour()" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs md:text-sm font-extrabold shadow-lg transition">
+                    بدء الجولة 🚀
+                </button>
+
+                <button id="next-btn" onclick="nextArtwork()" class="hidden px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs md:text-sm font-bold transition">
+                    اللوحة التالية →
+                </button>
             </div>
         </div>
-    </header>
-
-    <!-- Main Content Area -->
-    <main class="flex-grow flex items-center justify-center p-2 md:p-6 relative overflow-hidden w-full">
-
-        <!-- STEP 1: ENTRANCE -->
-        <section id="step-entrance" class="w-full max-w-5xl transition-all duration-700">
-            <div class="relative w-full h-[500px] rounded-3xl overflow-hidden shadow-xl border border-white/80 flex flex-col justify-between p-8"
-                 style="background: linear-gradient(to bottom, rgba(240, 247, 244, 0.4), rgba(225, 239, 230, 0.85)), url('https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1280&auto=format&fit=crop') center/cover no-repeat;">
-                
-                <div class="glass-panel p-6 rounded-2xl max-w-md mx-auto text-center shadow-lg border-emerald-100/50 mt-4">
-                    <span class="bg-pink-100 text-pink-600 text-xs font-bold px-3.5 py-1 rounded-full tracking-wide">وطن يُحكى بفرشاة وألوان 🎨</span>
-                    <h2 class="text-2xl font-black mt-2 text-emerald-950">معرض نحلم ونحقق الفني</h2>
-                    <p class="text-xs text-emerald-800 mt-2 leading-relaxed">جولة افتراضية تأخذكم بين لوحات طالباتنا المبدعات احتفاءً باليوم الوطني المجيد</p>
-                </div>
-
-                <div class="flex flex-col items-center gap-3 mb-6">
-                    <button onclick="enterMuseum()" class="bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-bold text-lg px-10 py-3.5 rounded-full shadow-lg shadow-pink-200/50 flex items-center gap-3 border border-white/50 transition transform hover:scale-105 active:scale-95">
-                        <i class="fa-solid fa-door-open text-xl"></i>
-                        <span>دخول صالة المعرض</span>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- STEP 2: ART GALLERY ROOM -->
-        <section id="step-gallery" class="w-full max-w-[98%] hidden transition-all duration-700">
-            <div class="gallery-wall relative w-full min-h-[660px] rounded-3xl overflow-hidden border border-white/80 shadow-xl flex flex-col justify-between p-4 md:p-8">
-
-                <!-- Room Header -->
-                <div class="relative z-10 flex justify-between items-center glass-panel px-6 py-3 rounded-2xl mb-4">
-                    <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-pink-400 animate-ping"></span>
-                        <span id="artwork-category" class="text-xs md:text-sm font-bold text-emerald-900 tracking-wider">صالة المعرض الفني</span>
-                    </div>
-                    <div class="text-xs md:text-sm font-bold bg-white/90 px-4 py-1.5 rounded-xl border border-emerald-100 text-emerald-900 shadow-sm">
-                        اللوحة <span id="current-index" class="text-pink-500">1</span> من <span id="total-artworks">3</span>
-                    </div>
-                </div>
-
-                <!-- Main Art Display Area -->
-                <div class="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-end my-auto py-2">
-                    
-                    <!-- RIGHT SIDE: Student Guide -->
-                    <div class="md:col-span-4 flex flex-col items-center justify-end h-full relative order-1 md:order-1 pt-24">
-                        
-                        <div onclick="toggleStudentSpeech()" class="anime-character-container cursor-pointer relative group flex flex-col items-center w-full">
-                            
-                            <div id="speech-bubble" class="manga-bubble hidden opacity-0">
-                                <p id="manga-text">أهلاً بكم! اضغطوا عليّ لأشرح لكم اللوحة.</p>
-                            </div>
-
-                            <span class="bg-pink-400 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-md mb-3 flex items-center gap-1.5 group-hover:scale-105 transition">
-                                <i class="fa-solid fa-comment-dots"></i> اضغطي عليّ للتحدث 🔊
-                            </span>
-
-                            <div class="w-56 h-80 md:w-64 md:h-96 relative filter drop-shadow-[0_10px_15px_rgba(45,106,79,0.15)]">
-                                <svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-                                    <ellipse cx="100" cy="310" rx="50" ry="8" fill="#2d6a4f" opacity="0.15"/>
-                                    <rect x="80" y="230" width="14" height="65" fill="#fdc293" rx="4"/>
-                                    <rect x="106" y="230" width="14" height="65" fill="#fdc293" rx="4"/>
-                                    <rect x="78" y="275" width="18" height="20" fill="#ffffff" rx="2"/>
-                                    <rect x="104" y="275" width="18" height="20" fill="#ffffff" rx="2"/>
-                                    <path d="M75 295 C75 288, 98 288, 98 295 L98 308 C98 313, 75 313, 75 308 Z" fill="#2d6a4f"/>
-                                    <path d="M102 295 C102 288, 125 288, 125 295 L125 308 C125 313, 102 313, 102 308 Z" fill="#2d6a4f"/>
-
-                                    <path d="M62 160 L138 160 L148 235 L52 235 Z" fill="#95d5b2"/>
-                                    <path d="M82 160 L78 235 M100 160 L100 235 M118 160 L122 235" stroke="#74c69d" stroke-width="2"/>
-
-                                    <path d="M68 98 L132 98 L138 162 L62 162 Z" fill="#2d6a4f"/>
-                                    <polygon points="100,120 80,98 100,98" fill="#ffffff"/>
-                                    <polygon points="100,120 120,98 100,98" fill="#ffffff"/>
-
-                                    <path d="M66 102 L48 158 L58 163 L73 112 Z" fill="#2d6a4f"/>
-                                    <circle cx="53" cy="162" r="8" fill="#fdc293"/>
-                                    
-                                    <path d="M134 102 L160 142 L150 150 L130 112 Z" fill="#2d6a4f"/>
-                                    <circle cx="158" cy="146" r="8" fill="#fdc293"/>
-
-                                    <rect x="92" y="88" width="16" height="14" fill="#f3a677" rx="2"/>
-                                    <ellipse cx="100" cy="72" rx="30" ry="28" fill="#fdc293"/>
-                                    
-                                    <ellipse cx="88" cy="70" rx="6" ry="8" fill="#1b4332"/>
-                                    <ellipse cx="112" cy="70" rx="6" ry="8" fill="#1b4332"/>
-                                    <circle cx="89" cy="68" r="2.5" fill="#ffffff"/>
-                                    <circle cx="113" cy="68" r="2.5" fill="#ffffff"/>
-                                    
-                                    <path d="M95 83 Q100 87 105 83" stroke="#e11d48" stroke-width="2.5" fill="none"/>
-                                    <ellipse cx="82" cy="77" rx="5" ry="2.5" fill="#f43f5e" opacity="0.4"/>
-                                    <ellipse cx="118" cy="77" rx="5" ry="2.5" fill="#f43f5e" opacity="0.4"/>
-
-                                    <path d="M68 68 C62 25, 138 25, 132 68 C138 110, 138 135, 138 135 L124 125 C124 125, 128 75, 100 45 C72 75, 76 125, 76 125 L62 135 Z" fill="#1b4332"/>
-                                    <path d="M72 62 Q85 78 92 62 Q100 80 108 62 Q115 78 128 62 Q115 48 100 48 Q85 48 72 62 Z" fill="#2d6a4f"/>
-                                </svg>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- LEFT / CENTER SIDE: Painting & Description -->
-                    <div class="md:col-span-8 flex flex-col items-center order-2 md:order-2 w-full">
-                        <div class="w-48 h-6 bg-gradient-to-b from-white/60 to-transparent rounded-t-full blur-sm mb-1"></div>
-
-                        <div class="gallery-frame bg-white border-[12px] border-white rounded-2xl overflow-hidden relative group w-full shadow-lg">
-                            <img id="artwork-image" 
-                                 src="" 
-                                 alt="لوحة المعرض" 
-                                 class="w-full h-80 md:h-[400px] object-cover transition duration-500">
-                        </div>
-
-                        <div class="mt-4 glass-panel p-5 rounded-2xl w-full text-right border-emerald-100">
-                            <div class="flex justify-between items-center border-b border-emerald-100/80 pb-3 mb-2">
-                                <h3 id="artwork-title" class="font-bold text-lg md:text-xl text-emerald-950">عنوان اللوحة</h3>
-                                <span id="artwork-artist" class="text-xs md:text-sm font-semibold text-pink-600 bg-pink-50 px-3 py-1.5 rounded-lg border border-pink-100">اسم الرسامة</span>
-                            </div>
-                            <p id="artwork-description" class="text-xs md:text-sm text-emerald-900 leading-relaxed">
-                                وصف اللوحة والتفاصيل الفنية الخاصة بها...
-                            </p>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Room Bottom Navigation -->
-                <div class="relative z-10 flex justify-between items-center glass-panel px-6 py-3.5 rounded-2xl mt-4">
-                    <button onclick="prevArtwork()" class="px-5 py-2 bg-white hover:bg-emerald-50 text-emerald-900 text-xs md:text-sm rounded-xl font-semibold transition border border-emerald-200/60 shadow-sm flex items-center gap-2">
-                        <i class="fa-solid fa-chevron-right"></i> اللوحة السابقة
-                    </button>
-
-                    <div id="next-btn-container">
-                        <button onclick="nextArtwork()" class="px-6 py-2 bg-pink-400 hover:bg-pink-500 text-white font-bold text-xs md:text-sm rounded-xl transition flex items-center gap-2 shadow-md">
-                            <span>اللوحة التالية</span> <i class="fa-solid fa-chevron-left"></i>
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="w-full py-3 text-center text-xs text-emerald-800 glass-panel border-t-0 font-medium">
-        معرض اليوم الوطني الفني &copy; 2026 - إعداد الطالبة: لمى الغامدي | إشراف المعلمة: أمل
-    </footer>
+    </div>
 
     <script>
-        const artworks = [
+        // Data Configuration
+        const artworksData = [
             {
-                title: "أصالة الماضي وجمال الحاضر",
-                artist: "سارة محمد - الصف الثاني ثانوي",
-                category: "قسم الفن التشكيلي التراثي",
-                image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=1000&auto=format&fit=crop",
-                description: "عمل فني متميز يُبرز مفردات التراث السعودي بريشة إبداعية معاصرة، تم استخدام ألوان زيتية دقيقة لإبراز العمق والجمال.",
-                speech: "أهلاً بكِ في اللوحة الأولى! استخدمت فيها زميلتنا سارة الألوان الزيتية لدمج التراث السعودي الأصيل بالطابع العصري."
+                title: "أصالة الماضي وحداثة الحاضر",
+                artist: "الطالبة: سارة محمد",
+                desc: "عمل فني تجسد فيه عراقة التراث السعودي ممزوجاً مع النهضة المعمارية الحديثة.",
+                color: 0x0284c7,
+                xPos: -8
             },
             {
-                title: "طبيعة ساحرة بألوان الأكريليك",
-                artist: "ريم عبد الله - الصف الأول ثانوي",
-                category: "قسم الطبيعة الصامتة",
-                image: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=1000&auto=format&fit=crop",
-                description: "لوحة تعكس انسجام الطبيعة بألوان الأكريليك المشرقة، برزت فيها ضربات الفرشاة الحرة والتناغم المبهج بين الألوان.",
-                speech: "هذه اللوحة الثانية للرائعة ريم! ألوان الأكريليك فيها تعطي شعوراً بالحيوية والبهجة بفضل ضربات الفرشاة الحرة."
+                title: "طبيعة وشموخ وطن",
+                artist: "الطالبة: ريم عبد الله",
+                desc: "تجسيد رائع لطبيعة وتضاريس المملكة الخلابة بألوان أنيقة يعلوها شموخ النخيل.",
+                color: 0x059669,
+                xPos: 0
             },
             {
                 title: "رؤية مستقبلية زاهية",
-                artist: "شهد خالد - الصف الثالث ثانوي",
-                category: "قسم الفن التجريدي المعاصر",
-                image: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=1000&auto=format&fit=crop",
-                description: "تجسيد تجريدي طموح يعبر عن التطلع نحو المستقبل المشرق باستخدام تباين ألوان إكريليك حديثة.",
-                speech: "وهذه آخر لوحة تجريدية لشهد! تعبر عن تطلعاتنا المستقبلية الزاهية والمشرقة."
+                artist: "الطالبة: شهد خالد",
+                desc: "رسمة تجريدية تعبر عن طموحات اليوم الوطني ورؤية 2030 الزاهرة بسواعد الشباب.",
+                color: 0xd97706,
+                xPos: 8
             }
         ];
 
-        let currentIndex = 0;
+        let scene, camera, renderer;
+        let currentStep = -1;
         let synth = window.speechSynthesis;
-        let isSpeaking = false;
 
-        function showStep(stepId) {
-            ['entrance', 'gallery'].forEach(id => {
-                document.getElementById(`step-${id}`).classList.add('hidden');
+        function init3D() {
+            const container = document.getElementById('canvas-container');
+
+            // 1. Scene setup
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0f1d);
+            scene.fog = new THREE.FogExp2(0x0a0f1d, 0.015);
+
+            // 2. Camera setup
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 3, 14);
+
+            // 3. Renderer setup
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+
+            // 4. Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambientLight);
+
+            // Main Track Light
+            const topLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            topLight.position.set(0, 10, 5);
+            scene.add(topLight);
+
+            // 5. Environment (Walls, Floor, Ceiling)
+            createGalleryRoom();
+
+            // 6. Add Artworks, Hanging Wires, Track Lights & Plants
+            artworksData.forEach((art, index) => {
+                createHangingArtwork(art, index);
             });
-            document.getElementById(`step-${stepId}`).classList.remove('hidden');
-            stopSpeech();
+
+            window.addEventListener('resize', onWindowResize);
         }
 
-        function enterMuseum() {
-            showStep('gallery');
-            loadArtwork(0);
+        function createGalleryRoom() {
+            // Floor (Emerald Marble Look)
+            const floorGeo = new THREE.PlaneGeometry(50, 30);
+            const floorMat = new THREE.MeshStandardMaterial({ 
+                color: 0x064e3b, 
+                roughness: 0.2, 
+                metalness: 0.1 
+            });
+            const floor = new THREE.Mesh(floorGeo, floorMat);
+            floor.rotation.x = -Math.PI / 2;
+            floor.position.y = 0;
+            scene.add(floor);
+
+            // Main Back Wall (Concrete Texture Finish)
+            const wallGeo = new THREE.PlaneGeometry(50, 12);
+            const wallMat = new THREE.MeshStandardMaterial({ 
+                color: 0x94a3b8, 
+                roughness: 0.8 
+            });
+            const wall = new THREE.Mesh(wallGeo, wallMat);
+            wall.position.set(0, 6, -6);
+            scene.add(wall);
+
+            // Ceiling
+            const ceilingGeo = new THREE.PlaneGeometry(50, 30);
+            const ceilingMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.9 });
+            const ceiling = new THREE.Mesh(ceilingGeo, ceilingMat);
+            ceiling.rotation.x = Math.PI / 2;
+            ceiling.position.y = 12;
+            scene.add(ceiling);
+
+            // Ceiling Track Light Bar (Horizontal Beam)
+            const trackGeo = new THREE.BoxGeometry(40, 0.15, 0.3);
+            const trackMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.8 });
+            const track = new THREE.Mesh(trackGeo, trackMat);
+            track.position.set(0, 11.9, -5.2);
+            scene.add(track);
         }
 
-        function loadArtwork(index) {
+        function createHangingArtwork(art, index) {
+            const group = new THREE.Group();
+            group.position.x = art.xPos;
+
+            // Artwork Panel Canvas
+            const panelGeo = new THREE.BoxGeometry(3.6, 4.8, 0.1);
+            const panelMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3 });
+            const panel = new THREE.Mesh(panelGeo, panelMat);
+            panel.position.set(0, 5.2, -5.5);
+            group.add(panel);
+
+            // Inner Picture Plane
+            const picGeo = new THREE.PlaneGeometry(3.2, 3.2);
+            const picMat = new THREE.MeshStandardMaterial({ color: art.color, roughness: 0.5 });
+            const pic = new THREE.Mesh(picGeo, picMat);
+            pic.position.set(0, 5.6, -5.44);
+            group.add(pic);
+
+            // Wires Hanging from Ceiling
+            const wireMat = new THREE.MeshBasicMaterial({ color: 0x475569 });
+            
+            const wireGeoLeft = new THREE.CylinderGeometry(0.015, 0.015, 4.5);
+            const wireLeft = new THREE.Mesh(wireGeoLeft, wireMat);
+            wireLeft.position.set(-1.6, 9.7, -5.5);
+            group.add(wireLeft);
+
+            const wireRight = new THREE.Mesh(wireGeoLeft, wireMat);
+            wireRight.position.set(1.6, 9.7, -5.5);
+            group.add(wireRight);
+
+            // Dedicated Spotlight above each artwork
+            const spotLight = new THREE.SpotLight(0xfffbeb, 2.5);
+            spotLight.position.set(art.xPos, 11.5, -4);
+            spotLight.target = panel;
+            spotLight.angle = Math.PI / 6;
+            spotLight.penumbra = 0.4;
+            scene.add(spotLight);
+
+            // 🌿 Luxury Plant Decor (Potted Plants between and beside artworks)
+            const plantGroup = createPlantPots();
+            plantGroup.position.set(art.xPos + 4, 0, -5);
+            scene.add(plantGroup);
+
+            scene.add(group);
+        }
+
+        function createPlantPots() {
+            const plantGroup = new THREE.Group();
+
+            // Pot
+            const potGeo = new THREE.CylinderGeometry(0.5, 0.35, 1.2, 16);
+            const potMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.3 });
+            const pot = new THREE.Mesh(potGeo, potMat);
+            pot.position.y = 0.6;
+            plantGroup.add(pot);
+
+            // Plant Leaves (Spherical Folia Cluster)
+            const leafGeo = new THREE.SphereGeometry(0.75, 12, 12);
+            const leafMat = new THREE.MeshStandardMaterial({ color: 0x10b981, roughness: 0.8 });
+            
+            const leaf1 = new THREE.Mesh(leafGeo, leafMat);
+            leaf1.position.set(0, 1.5, 0);
+            plantGroup.add(leaf1);
+
+            const leaf2 = new THREE.Mesh(leafGeo, leafMat);
+            leaf2.position.set(0.2, 1.8, -0.1);
+            leaf2.scale.set(0.8, 0.8, 0.8);
+            plantGroup.add(leaf2);
+
+            return plantGroup;
+        }
+
+        function startTour() {
+            document.getElementById('action-btn').classList.add('hidden');
+            document.getElementById('prev-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.remove('hidden');
+            goToArtwork(0);
+        }
+
+        function goToArtwork(index) {
             stopSpeech();
-            currentIndex = index;
-            const item = artworks[currentIndex];
+            currentStep = index;
+            const item = artworksData[currentStep];
 
-            document.getElementById('artwork-title').innerText = item.title;
-            document.getElementById('artwork-artist').innerText = item.artist;
-            document.getElementById('artwork-category').innerText = item.category;
-            document.getElementById('artwork-image').src = item.image;
-            document.getElementById('artwork-description').innerText = item.description;
+            // Animate Camera Smoothly using Tween.js
+            new TWEEN.Tween(camera.position)
+                .to({ x: item.xPos, y: 5.2, z: 2.2 }, 1400)
+                .easing(TWEEN.Easing.Cubic.Out)
+                .start();
 
-            document.getElementById('current-index').innerText = currentIndex + 1;
-            document.getElementById('total-artworks').innerText = artworks.length;
+            document.getElementById('guide-text').innerHTML = `<b class="text-emerald-400">${item.title}</b> — ${item.artist}<br><span class="text-xs text-slate-300">${item.desc}</span>`;
+            speakText(`${item.title}. ${item.artist}. ${item.desc}`);
 
-            const btnContainer = document.getElementById('next-btn-container');
-            if (currentIndex === artworks.length - 1) {
-                btnContainer.innerHTML = `
-                    <button onclick="loadArtwork(0)" class="px-6 py-2 bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-bold text-xs md:text-sm rounded-xl shadow-md flex items-center gap-2 transition transform hover:scale-105">
-                        <i class="fa-solid fa-rotate-right"></i>
-                        <span>إعادة الجولة من البداية</span>
-                    </button>
-                `;
+            document.getElementById('prev-btn').disabled = (currentStep === 0);
+            
+            if (currentStep === artworksData.length - 1) {
+                document.getElementById('next-btn').innerText = "الختام ✨";
             } else {
-                btnContainer.innerHTML = `
-                    <button onclick="nextArtwork()" class="px-6 py-2 bg-pink-400 hover:bg-pink-500 text-white font-bold text-xs md:text-sm rounded-xl transition flex items-center gap-2 shadow-md">
-                        <span>اللوحة التالية</span> <i class="fa-solid fa-chevron-left"></i>
-                    </button>
-                `;
+                document.getElementById('next-btn').innerText = "اللوحة التالية →";
             }
         }
 
         function nextArtwork() {
-            if (currentIndex < artworks.length - 1) {
-                loadArtwork(currentIndex + 1);
+            if (currentStep < artworksData.length - 1) {
+                goToArtwork(currentStep + 1);
+            } else {
+                finishTour();
             }
         }
 
         function prevArtwork() {
-            if (currentIndex > 0) {
-                loadArtwork(currentIndex - 1);
+            if (currentStep > 0) {
+                goToArtwork(currentStep - 1);
             }
         }
 
-        function toggleStudentSpeech() {
-            if (isSpeaking) {
-                stopSpeech();
-            } else {
-                startSpeech();
-            }
+        function finishTour() {
+            stopSpeech();
+            new TWEEN.Tween(camera.position)
+                .to({ x: 0, y: 3, z: 14 }, 1400)
+                .easing(TWEEN.Easing.Cubic.Out)
+                .start();
+
+            const closing = "ختاماً، نشكركم على زيارة معرض اليوم الوطني الفني. دمت يا وطننا شامخاً ونحلم ونحقق دائماً! 🇸🇦✨";
+            document.getElementById('guide-text').innerText = closing;
+            speakText(closing);
+
+            document.getElementById('prev-btn').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('action-btn').classList.remove('hidden');
+            document.getElementById('action-btn').innerText = "إعادة الجولة 🔄";
+            document.getElementById('action-btn').onclick = startTour;
         }
 
-        function startSpeech() {
-            const item = artworks[currentIndex];
-            const bubble = document.getElementById('speech-bubble');
-            const textElem = document.getElementById('manga-text');
-
-            textElem.innerText = item.speech;
-            
-            bubble.classList.remove('hidden');
-            setTimeout(() => {
-                bubble.classList.remove('opacity-0');
-                bubble.classList.add('opacity-100');
-            }, 50);
-
+        function speakText(text) {
             if ('speechSynthesis' in window) {
                 synth.cancel();
-                const utterance = new SpeechSynthesisUtterance(item.speech);
+                const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'ar-SA';
                 utterance.rate = 0.95;
-
-                utterance.onend = () => {
-                    stopSpeech();
-                };
-
                 synth.speak(utterance);
-                isSpeaking = true;
             }
         }
 
@@ -394,13 +342,23 @@
             if ('speechSynthesis' in window) {
                 synth.cancel();
             }
-            const bubble = document.getElementById('speech-bubble');
-            bubble.classList.add('opacity-0');
-            setTimeout(() => {
-                bubble.classList.add('hidden');
-            }, 200);
-            isSpeaking = false;
         }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate(time) {
+            requestAnimationFrame(animate);
+            TWEEN.update();
+            renderer.render(scene, camera);
+        }
+
+        // Initialize and Start
+        init3D();
+        animate();
     </script>
 </body>
 </html>
