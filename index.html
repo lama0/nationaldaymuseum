@@ -12,7 +12,6 @@
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
         * { font-family: 'Tajawal', sans-serif; }
         
-        /* إخفاء عنصر A-Frame حتى يتم النقر على دخول المعرض */
         #gallery-3d {
             display: none;
             position: fixed;
@@ -21,6 +20,15 @@
             width: 100vw;
             height: 100vh;
             z-index: 10;
+        }
+
+        /* فقاعة كلام المرشدة */
+        .manga-bubble {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border: 2px solid #10b981;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
     </style>
 </head>
@@ -32,12 +40,12 @@
         <header class="w-full bg-white/80 backdrop-blur-md border-b border-emerald-100 py-4 px-6 sticky top-0 z-20">
             <div class="max-w-6xl mx-auto flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-14 h-14 rounded-2xl bg-white p-1 shadow-md border border-emerald-100 flex items-center justify-center overflow-hidden shrink-0">
+                    <div class="w-16 h-16 rounded-2xl bg-white p-1 shadow-md border border-emerald-100 flex items-center justify-center overflow-hidden shrink-0">
                         <img src="logo.png" alt="شعار المدرسة" class="w-full h-full object-contain" onerror="this.src='https://api.iconify.design/lucide:school.svg?color=%232d6a4f'">
                     </div>
                     <div>
                         <h1 class="font-bold text-emerald-950 text-lg md:text-xl flex items-center gap-2">
-                            معرض اليوم الوطني الفني <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">3D Interactive</span>
+                            معرض اليوم الوطني الفني <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">الجولة الافتراضية 3D</span>
                         </h1>
                         <p class="text-xs text-slate-500">إعداد الطالبة: لمى الغامدي | إشراف المعلمة: أمل</p>
                     </div>
@@ -48,7 +56,6 @@
         <!-- المحتوى الرئيسي للمقدمة -->
         <main class="flex-1 max-w-4xl mx-auto w-full px-4 py-8 flex flex-col items-center justify-center text-center">
             <div class="relative w-full rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-slate-900 group min-h-[400px] flex items-center justify-center">
-                <!-- خلفية سريعة للمقدمة -->
                 <div class="absolute inset-0 bg-cover bg-center opacity-40 transition-transform duration-1000 group-hover:scale-105" style="background-image: url('https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=1200&q=80');"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
 
@@ -60,21 +67,16 @@
                         معرض نحلم ونحقق الفني
                     </h2>
                     <p class="text-slate-200 text-base md:text-lg mb-8 leading-relaxed font-light">
-                        جولة افتراضية ثلاثية الأبعاد تأخذكم بين لوحات طالباتنا المبدعات احتفاءً باليوم الوطني المجيد.
+                        انضمي إلى جولة موجهة برفق المرشدة الافتراضية للاطلاع على لوحات طالباتنا المبدعات بمناسبة اليوم الوطني.
                     </p>
 
-                    <!-- زر دخول صالة المعرض 3D -->
                     <button onclick="enter3DGallery()" class="group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 text-white font-bold text-lg shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:scale-105 active:scale-95 transition-all duration-300">
-                        <span>دخول صالة المعرض الـ 3D</span>
-                        <svg class="w-6 h-6 transform group-hover:translate-x-[-4px] transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                        </svg>
+                        <span>دخول المعرض وبدء الجولة 🎨</span>
                     </button>
                 </div>
             </div>
         </main>
 
-        <!-- الفوتر -->
         <footer class="w-full bg-white/60 border-t border-emerald-100 py-4 text-center text-xs text-slate-500">
             معرض اليوم الوطني الفني © 2026 - إعداد الطالبة: لمى الغامدي | إشراف المعلمة: أمل
         </footer>
@@ -82,117 +84,155 @@
 
     <!-- 2. مشهد الـ 3D (A-Frame Canvas) -->
     <div id="gallery-3d">
-        <!-- واجهة التحكم فوق الـ 3D -->
+        <!-- الشريط العلوي -->
         <div class="absolute top-4 left-4 right-4 z-50 flex justify-between items-center pointer-events-none">
-            <div class="bg-slate-900/80 backdrop-blur-md text-white px-4 py-2 rounded-xl text-xs md:text-sm border border-slate-700 pointer-events-auto">
-                🎮 <b>التحكم:</b> استخدم أسهم الكيبورد أو (W, A, S, D) للتحرك | اسحب بالماوس للالتفات | انقر على اللوحات لرؤيتها عن قرب
+            <div class="bg-slate-900/80 backdrop-blur-md text-white px-4 py-2 rounded-xl text-xs md:text-sm border border-slate-700 pointer-events-auto flex items-center gap-3">
+                <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>المعرض الافتراضي 3D - الجولة الإرشادية</span>
             </div>
-            <button onclick="exit3DGallery()" class="bg-red-500/90 hover:bg-red-600 text-white font-bold px-4 py-2 rounded-xl text-sm backdrop-blur-md transition-all shadow-lg pointer-events-auto flex items-center gap-2">
-                ✕ خروج من المعرض
+            <button onclick="exit3DGallery()" class="bg-red-500/90 hover:bg-red-600 text-white font-bold px-4 py-2 rounded-xl text-sm backdrop-blur-md transition-all shadow-lg pointer-events-auto">
+                ✕ خروج
             </button>
         </div>
 
-        <!-- لوحة معلومات اللوحة عند النقر عليها -->
-        <div id="artwork-info" class="hidden absolute bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900/90 border border-emerald-500/50 text-white p-5 rounded-2xl max-w-md w-[90%] backdrop-blur-lg shadow-2xl text-center">
-            <h3 id="info-title" class="text-xl font-bold text-emerald-400 mb-1">اسم اللوحة</h3>
-            <p id="info-artist" class="text-sm text-slate-300 mb-2">رسم الطالبة: سارّة أحمد</p>
-            <p id="info-desc" class="text-xs text-slate-400 leading-relaxed mb-4">وصف مختصر عن العمل الفني وفكرته بمناسبة اليوم الوطني.</p>
-            <button onclick="closeArtworkInfo()" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg transition-colors">إغلاق المعاينة</button>
+        <!-- فقاعة المرشدة والتحكم السفلي -->
+        <div id="guide-ui" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-2xl w-[92%] pointer-events-auto flex flex-col items-center gap-3">
+            
+            <!-- فقاعة كلام المرشدة -->
+            <div class="manga-bubble p-4 text-slate-900 w-full text-center relative">
+                <div class="text-xs text-emerald-700 font-bold mb-1 flex items-center justify-center gap-1">
+                    <span>👩‍🎨 مرشدة المعرض</span>
+                </div>
+                <p id="guide-text" class="text-sm md:text-base font-semibold text-emerald-950">
+                    أهلاً وسهلاً بكم في معرضنا الفني! اضغطي على زر "بدء الجولة" لنستكشف اللوحات معاً.
+                </p>
+            </div>
+
+            <!-- أزرار التحكم والجولة -->
+            <div class="flex items-center gap-4 bg-slate-900/90 backdrop-blur-md px-6 py-3 rounded-2xl border border-slate-700 shadow-xl">
+                <button id="prev-btn" onclick="prevArtwork()" class="hidden px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs md:text-sm rounded-xl font-bold transition">
+                    ← اللوحة السابقة
+                </button>
+                
+                <button id="action-btn" onclick="startGuidedTour()" class="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-extrabold rounded-xl shadow-lg transition">
+                    بدء الجولة 🚀
+                </button>
+
+                <button id="next-btn" onclick="nextArtwork()" class="hidden px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs md:text-sm rounded-xl font-bold transition">
+                    اللوحة التالية →
+                </button>
+            </div>
         </div>
 
         <!-- مشهد A-Frame 3D -->
         <a-scene embedded class="w-full h-full">
-            <!-- الكاميرا والمؤشر -->
-            <a-entity id="camera-rig" position="0 1.6 8">
-                <a-camera look-controls="pointerLockEnabled: false" wasd-controls="acceleration: 20">
-                    <a-cursor color="#10b981" raycaster="objects: .clickable" far="10"></a-cursor>
-                </a-camera>
+            <!-- الكاميرا (ثابتة موجهة، الحركة كود برمجي فقط) -->
+            <a-entity id="camera-rig" position="0 1.6 7" rotation="0 0 0">
+                <a-camera look-controls="enabled: false" wasd-controls="enabled: false"></a-camera>
             </a-entity>
 
-            <!-- الإضاءة -->
-            <a-ambient-light color="#ffffff" intensity="0.6"></a-ambient-light>
-            <a-directional-light position="0 10 5" intensity="0.8" cast-shadow="true"></a-directional-light>
+            <!-- الإضاءات -->
+            <!-- ضوء الشمس الطبيعي القادم من الشباك -->
+            <a-light type="directional" position="8 6 -2" intensity="1.2" color="#fffbeb" cast-shadow="true"></a-light>
+            <!-- ضوء المحيط الداخلي -->
+            <a-light type="ambient" color="#e2e8f0" intensity="0.5"></a-light>
 
-            <!-- الغرفة: الأرضية والسقف والجدران -->
-            <!-- الأرضية -->
-            <a-plane position="0 0 0" rotation="-90 0 0" width="16" height="24" color="#064e3b"></a-plane>
+            <!-- 🏛️ الغرفة والمعمارية -->
+            <!-- الأرضية الخشبية/الرخامية -->
+            <a-plane position="0 0 0" rotation="-90 0 0" width="18" height="18" color="#d97706" material="roughness: 0.3"></a-plane>
             <!-- السقف -->
-            <a-plane position="0 6 0" rotation="90 0 0" width="16" height="24" color="#022c22"></a-plane>
-            <!-- الجدار الخلفي الرئيسي -->
-            <a-plane position="0 3 -12" width="16" height="6" color="#047857"></a-plane>
-            <!-- شعار اليوم الوطني على الجدار الخلفي -->
-            <a-text value="معرض نحلم ونحقق الفني 🇸🇦" position="0 4.5 -11.9" align="center" width="12" color="#ffffff"></a-text>
+            <a-plane position="0 5 0" rotation="90 0 0" width="18" height="18" color="#f8fafc"></a-plane>
+            
+            <!-- الجدار الخلفي الرئيسي (المعلق عليه اللوحات) -->
+            <a-plane position="0 2.5 -6" width="18" height="5" color="#064e3b"></a-plane>
+            <!-- الجدار الأيمن (فيه الشباك وضوء الشمس) -->
+            <a-plane position="9 2.5 0" rotation="0 -90 0" width="18" height="5" color="#047857"></a-plane>
+            <!-- الجدار الأيسر -->
+            <a-plane position="-9 2.5 0" rotation="0 90 0" width="18" height="5" color="#047857"></a-plane>
 
-            <!-- الجدران الجانبية -->
-            <a-plane position="-8 3 0" rotation="0 90 0" width="24" height="6" color="#065f46"></a-plane>
-            <a-plane position="8 3 0" rotation="0 -90 0" width="24" height="6" color="#065f46"></a-plane>
-
-            <!-- ---------------------------------------------------------------- -->
-            <!-- المنصات واللوحات المعروضة (Pedestals & Paintings) -->
-            <!-- ---------------------------------------------------------------- -->
-
-            <!-- لوحة 1 (الجهة اليسرى - 1) -->
-            <a-entity position="-5 0 -6">
-                <!-- طاولة/منصة العرض -->
-                <a-box position="0 0.75 0" width="1.2" height="1.5" depth="0.8" color="#ffffff"></a-box>
-                <!-- برواز اللوحة -->
-                <a-box class="clickable" onclick="showArtwork('عروس البحر الأحمر', 'الطالبة: نورة الشهري', 'رسمة تعبر عن جمال مدينة جدة ومستقبلها الواعد.')" position="0 2.2 0" width="1.6" height="1.2" depth="0.05" color="#1e293b">
-                    <!-- صوره اللوحة داخل البرواز -->
-                    <a-plane position="0 0 0.03" width="1.5" height="1.1" material="src: url(https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=600&q=80)"></a-plane>
-                </a-box>
-                <a-text value="لوحة: عروس البحر الأحمر" position="0 1.3 0.41" align="center" width="2.5" color="#0f172a"></a-text>
+            <!-- 🪟 الشباك الكبير المطل للخارج على الجدار الأيمن -->
+            <a-entity position="8.9 2.6 -1" rotation="0 -90 0">
+                <!-- إطار الشباك -->
+                <a-box position="0 0 0" width="4.2" height="2.7" depth="0.1" color="#1e293b"></a-box>
+                <!-- منظر خارجي للشمس والغيوم من الشباك -->
+                <a-plane position="0 0 0.06" width="4" height="2.5" material="src: url(https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80)"></a-plane>
+                <a-light type="spot" position="0 0 0.5" intensity="1.5" angle="45" color="#fef08a"></a-light>
             </a-entity>
 
-            <!-- لوحة 2 (الجهة اليسرى - 2) -->
-            <a-entity position="-5 0 0">
-                <a-box position="0 0.75 0" width="1.2" height="1.5" depth="0.8" color="#ffffff"></a-box>
-                <a-box class="clickable" onclick="showArtwork('طويق لا ينكسر', 'الطالبة: ريم الدوسري', 'تجسيد لجبل طويق وشموخ الوطن بريشة الطموح.')" position="0 2.2 0" width="1.6" height="1.2" depth="0.05" color="#1e293b">
-                    <a-plane position="0 0 0.03" width="1.5" height="1.1" material="src: url(https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=600&q=80)"></a-plane>
+            <!-- 🖼️ اللوحات الفنية المعلقة على الجدار الخلفي -->
+            
+            <!-- لوحة 1 -->
+            <a-entity id="art-1" position="-5 2.5 -5.9">
+                <a-box width="2.2" height="1.6" depth="0.08" color="#78350f">
+                    <a-plane position="0 0 0.05" width="2" height="1.4" material="src: url(https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80)"></a-plane>
                 </a-box>
-                <a-text value="لوحة: طويق لا ينكسر" position="0 1.3 0.41" align="center" width="2.5" color="#0f172a"></a-text>
+                <a-light type="spot" position="0 1.5 1" target="#art-1" intensity="1" angle="30" color="#ffffff"></a-light>
             </a-entity>
 
-            <!-- لوحة 3 (الجهة اليمنى - 1) -->
-            <a-entity position="5 0 -6">
-                <a-box position="0 0.75 0" width="1.2" height="1.5" depth="0.8" color="#ffffff"></a-box>
-                <a-box class="clickable" onclick="showArtwork('رؤية نماء', 'الطالبة: سارة القحطاني', 'لوحة زيتية ترمز للتطور والازدهار البيئي والثقافي.')" position="0 2.2 0" width="1.6" height="1.2" depth="0.05" color="#1e293b">
-                    <a-plane position="0 0 0.03" width="1.5" height="1.1" material="src: url(https://images.unsplash.com/photo-1578926377703-668f409f7a78?auto=format&fit=crop&w=600&q=80)"></a-plane>
+            <!-- لوحة 2 (المركزية) -->
+            <a-entity id="art-2" position="0 2.5 -5.9">
+                <a-box width="2.4" height="1.7" depth="0.08" color="#78350f">
+                    <a-plane position="0 0 0.05" width="2.2" height="1.5" material="src: url(https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=800&q=80)"></a-plane>
                 </a-box>
-                <a-text value="لوحة: رؤية نماء" position="0 1.3 0.41" align="center" width="2.5" color="#0f172a"></a-text>
+                <a-light type="spot" position="0 1.5 1" target="#art-2" intensity="1" angle="30" color="#ffffff"></a-light>
             </a-entity>
 
-            <!-- لوحة 4 (الجهة اليمنى - 2) -->
-            <a-entity position="5 0 0">
-                <a-box position="0 0.75 0" width="1.2" height="1.5" depth="0.8" color="#ffffff"></a-box>
-                <a-box class="clickable" onclick="showArtwork('أصالة وتاريخ', 'الطالبة: شهد العتيبي', 'فن رقمي يمزج بين التراث السعودي والمعمار الحديث.')" position="0 2.2 0" width="1.6" height="1.2" depth="0.05" color="#1e293b">
-                    <a-plane position="0 0 0.03" width="1.5" height="1.1" material="src: url(https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=600&q=80)"></a-plane>
+            <!-- لوحة 3 -->
+            <a-entity id="art-3" position="5 2.5 -5.9">
+                <a-box width="2.2" height="1.6" depth="0.08" color="#78350f">
+                    <a-plane position="0 0 0.05" width="2" height="1.4" material="src: url(https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80)"></a-plane>
                 </a-box>
-                <a-text value="لوحة: أصالة وتاريخ" position="0 1.3 0.41" align="center" width="2.5" color="#0f172a"></a-text>
+                <a-light type="spot" position="0 1.5 1" target="#art-3" intensity="1" angle="30" color="#ffffff"></a-light>
             </a-entity>
 
-            <!-- لوحة مركزية كبيرة في الممر الرئيسي -->
-            <a-entity position="0 0 -9">
-                <a-box position="0 1 0" width="2.2" height="2" depth="0.8" color="#15803d"></a-box>
-                <a-box class="clickable" onclick="showArtwork('شغف نحو الفضاء', 'الطالبة: لمى الغامدي', 'عمل فني مميز يعبر عن طموح شبان وشابات الوطن نحو الآفاق العليا.')" position="0 3 0" width="2.8" height="1.8" depth="0.05" color="#022c22">
-                    <a-plane position="0 0 0.03" width="2.6" height="1.6" material="src: url(https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80)"></a-plane>
-                </a-box>
-                <a-text value="اللوحة الرئيسية: شغف نحو الفضاء" position="0 1.8 0.41" align="center" width="3.5" color="#ffffff"></a-text>
+            <!-- 👩‍🎨 البنت المرشدة (مجسم 3D 2D Avatar يرافق الكاميرا) -->
+            <a-entity id="guide-avatar" position="-3.5 1.4 -4.5" rotation="0 15 0">
+                <a-plane width="1.2" height="2" material="src: url(https://api.iconify.design/lucide:user-round.svg?color=%2310b981); transparent: true; opacity: 0.95"></a-plane>
             </a-entity>
 
         </a-scene>
     </div>
 
-    <!-- السكريبت الخاص بالتحكم والدخول والخروج -->
+    <!-- السكريبت والتحكم في الجولة -->
     <script>
+        const artworksData = [
+            {
+                title: "أصالة الماضي وحداثة الحاضر",
+                artist: "سارة محمد",
+                camPos: "-5 2.5 -3.2",
+                guidePos: "-6.5 1.5 -4.2",
+                speech: "اللوحة الأولى بعنوان 'أصالة الماضي وحداثة الحاضر' للطالبة سارة محمد. استخدمت فيها الألوان الزيتية لإبراز العمق والتناغم بين التراث السعودي والرؤية المعاصرة."
+            },
+            {
+                title: "طبيعة وشموخ وطن",
+                artist: "ريم عبد الله",
+                camPos: "0 2.5 -3.0",
+                guidePos: "-1.7 1.5 -4.0",
+                speech: "اللوحة الثانية للرائعة ريم عبد الله! تعكس طبيعة المملكة بألوان الأكريليك المشرقة وتعبّر عن الحيوية والجمال بريشة متميزة."
+            },
+            {
+                title: "رؤية مستقبلية زاهية",
+                artist: "شهد خالد",
+                camPos: "5 2.5 -3.2",
+                guidePos: "3.5 1.5 -4.2",
+                speech: "وهنا اللوحة الثالثة المبدعة لشهد خالد! عمل تجريدي يعبر عن طموحاتنا المستقبلية نحو اليوم الوطني وتطلعات الوطن الزاهرة."
+            }
+        ];
+
+        let currentStep = -1; // -1: View all gallery
+        let synth = window.speechSynthesis;
+
         function enter3DGallery() {
             document.getElementById('landing-page').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('landing-page').style.display = 'none';
                 document.getElementById('gallery-3d').style.display = 'block';
+                resetView();
             }, 500);
         }
 
         function exit3DGallery() {
+            stopSpeech();
             document.getElementById('gallery-3d').style.display = 'none';
             document.getElementById('landing-page').style.display = 'flex';
             setTimeout(() => {
@@ -200,15 +240,103 @@
             }, 50);
         }
 
-        function showArtwork(title, artist, desc) {
-            document.getElementById('info-title').innerText = title;
-            document.getElementById('info-artist').innerText = artist;
-            document.getElementById('info-desc').innerText = desc;
-            document.getElementById('artwork-info').classList.remove('hidden');
+        function resetView() {
+            currentStep = -1;
+            const cam = document.getElementById('camera-rig');
+            const avatar = document.getElementById('guide-avatar');
+            
+            cam.setAttribute('position', '0 2 3');
+            avatar.setAttribute('position', '-1.5 1.2 0.5');
+
+            document.getElementById('guide-text').innerText = "أهلاً وسهلاً بكم في معرض اليوم الوطني الفني! ضعي عينكِ على زر 'بدء الجولة' لنبدأ استكشاف اللوحات معاً 🇸🇦";
+            
+            document.getElementById('prev-btn').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('action-btn').classList.remove('hidden');
+            document.getElementById('action-btn').innerText = "بدء الجولة 🚀";
+            speakText("أهلاً وسهلاً بكم في معرض اليوم الوطني الفني! اضغطي على زر بدء الجولة لنبدأ استكشاف اللوحات معاً.");
         }
 
-        function closeArtworkInfo() {
-            document.getElementById('artwork-info').classList.add('hidden');
+        function startGuidedTour() {
+            currentStep = 0;
+            document.getElementById('action-btn').classList.add('hidden');
+            document.getElementById('prev-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.remove('hidden');
+            goToArtwork(0);
+        }
+
+        function goToArtwork(index) {
+            stopSpeech();
+            currentStep = index;
+            const item = artworksData[currentStep];
+
+            const cam = document.getElementById('camera-rig');
+            const avatar = document.getElementById('guide-avatar');
+
+            // تحريك الكاميرا والبنت نحو اللوحة
+            cam.setAttribute('animation', `property: position; to: ${item.camPos}; dur: 1500; easing: easeInOutQuad`);
+            avatar.setAttribute('animation', `property: position; to: ${item.guidePos}; dur: 1500; easing: easeInOutQuad`);
+
+            document.getElementById('guide-text').innerHTML = `<b class="text-emerald-700">${item.title}</b> - رسمة: ${item.artist}<br><span class="text-xs font-normal">${item.speech}</span>`;
+            speakText(item.speech);
+
+            // تحديث حالة الأزرار
+            document.getElementById('prev-btn').disabled = (currentStep === 0);
+            if (currentStep === artworksData.length - 1) {
+                document.getElementById('next-btn').innerText = "الختام ✨";
+            } else {
+                document.getElementById('next-btn').innerText = "اللوحة التالية →";
+            }
+        }
+
+        function nextArtwork() {
+            if (currentStep < artworksData.length - 1) {
+                goToArtwork(currentStep + 1);
+            } else {
+                finishTour();
+            }
+        }
+
+        function prevArtwork() {
+            if (currentStep > 0) {
+                goToArtwork(currentStep - 1);
+            }
+        }
+
+        function finishTour() {
+            stopSpeech();
+            const cam = document.getElementById('camera-rig');
+            const avatar = document.getElementById('guide-avatar');
+
+            // العودة لمنتصف الغرفة
+            cam.setAttribute('animation', 'property: position; to: 0 2 2.5; dur: 1500; easing: easeInOutQuad');
+            avatar.setAttribute('animation', 'property: position; to: 0 1.2 0.5; dur: 1500; easing: easeInOutQuad');
+
+            const closingText = "ختاماً، نشكركم على زيارة معرض اليوم الوطني الفني. دمت يا وطننا شامخاً ومعطاءً، ونحلم ونحقق دائماً! 🇸🇦✨";
+            document.getElementById('guide-text').innerText = closingText;
+            speakText(closingText);
+
+            document.getElementById('prev-btn').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('action-btn').classList.remove('hidden');
+            document.getElementById('action-btn').innerText = "إعادة الجولة 🔄";
+            document.getElementById('action-btn').onclick = startGuidedTour;
+        }
+
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                synth.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ar-SA';
+                utterance.rate = 0.95;
+                synth.speak(utterance);
+            }
+        }
+
+        function stopSpeech() {
+            if ('speechSynthesis' in window) {
+                synth.cancel();
+            }
         }
     </script>
 </body>
