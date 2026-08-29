@@ -12,8 +12,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <!-- Canvas Confetti -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
         body {
@@ -278,85 +276,6 @@
             </div>
         </section>
 
-        <!-- STEP 3: QUIZ -->
-        <section id="step-quiz" class="w-full max-w-3xl hidden transition-all duration-700">
-            <div class="glass-panel p-6 md:p-8 rounded-3xl shadow-2xl border-emerald-500/30">
-                <div class="flex justify-between items-center mb-6">
-                    <div class="flex items-center gap-2">
-                        <span class="bg-emerald-500/20 text-emerald-400 p-2 rounded-lg text-sm">
-                            <i class="fa-solid fa-circle-question"></i>
-                        </span>
-                        <h2 class="text-lg font-bold text-white">مسابقة المعرض الفني التفاعلي</h2>
-                    </div>
-                    <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 font-mono text-amber-400">
-                        النقاط: <span id="quiz-score" class="font-bold text-sm">0</span>
-                    </div>
-                </div>
-
-                <div id="quiz-box" class="space-y-6">
-                    <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700">
-                        <span id="question-number" class="text-xs text-amber-400 font-bold block mb-1">السؤال 1</span>
-                        <h3 id="question-text" class="text-base md:text-lg font-bold text-white leading-relaxed"></h3>
-                    </div>
-                    <div id="quiz-options" class="grid grid-cols-1 gap-3"></div>
-                </div>
-
-                <div id="quiz-result" class="hidden text-center py-6 space-y-4">
-                    <div class="w-20 h-20 bg-gradient-to-tr from-amber-400 to-emerald-400 rounded-full flex items-center justify-center mx-auto shadow-xl text-slate-900 text-3xl font-extrabold animate-bounce">
-                        <i class="fa-solid fa-trophy"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-white">مبارك! أكملتِ المسابقة بنجاح</h3>
-                    <p class="text-sm text-slate-300">حصلتِ على مجموع نقاط: <span id="final-score-display" class="font-bold text-emerald-400 text-lg">0</span></p>
-
-                    <div class="max-w-md mx-auto bg-slate-800/90 p-5 rounded-2xl border border-slate-700 mt-4">
-                        <label class="block text-xs text-slate-300 text-right font-medium mb-2">اكتبي اسمكِ للظهور في لوحة المتصدرين:</label>
-                        <div class="flex gap-2">
-                            <input type="text" id="player-name" placeholder="اسم المشارك/ة..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
-                            <button onclick="savePlayerScore()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition shadow-md">
-                                حفظ في القائمة
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- STEP 4: LEADERBOARD -->
-        <section id="step-leaderboard" class="w-full max-w-3xl hidden transition-all duration-700">
-            <div class="glass-panel p-6 md:p-8 rounded-3xl shadow-2xl border-amber-500/30">
-                <div class="text-center mb-6">
-                    <div class="inline-flex p-3 bg-amber-500/20 text-amber-400 rounded-2xl mb-2 text-2xl">
-                        <i class="fa-solid fa-ranking-star"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-white">لوحة متصدري المتحف الإلكتروني</h2>
-                    <p class="text-xs text-slate-400 mt-1">ترتيب المشاركين حسب أعلى النقاط</p>
-                </div>
-
-                <div class="bg-slate-800/80 rounded-2xl overflow-hidden border border-slate-700 shadow-inner mb-6">
-                    <table class="w-full text-right text-xs md:text-sm">
-                        <thead class="bg-slate-900/80 text-slate-400 text-[11px] uppercase border-b border-slate-700">
-                            <tr>
-                                <th class="py-3 px-4">الترتيب</th>
-                                <th class="py-3 px-4">اسم المشارك/ة</th>
-                                <th class="py-3 px-4 text-center">النقاط</th>
-                                <th class="py-3 px-4 text-left">التاريخ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="leaderboard-body" class="divide-y divide-slate-700/60 text-slate-200"></tbody>
-                    </table>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <button onclick="restartMuseum()" class="flex-1 py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-rotate-right"></i> العودة للبداية
-                    </button>
-                    <button onclick="showStep('gallery')" class="flex-1 py-3 bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-lg">
-                        <i class="fa-solid fa-person-walking-luggage"></i> إعادة جولة المعرض
-                    </button>
-                </div>
-            </div>
-        </section>
-
     </main>
 
     <!-- Footer -->
@@ -388,36 +307,16 @@
                 category: "قسم الفن التجريدي المعاصر",
                 image: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=1000&auto=format&fit=crop",
                 description: "تجسيد تجريدي طموح يعبر عن التطلع نحو المستقبل المشرق باستخدام تباين ألوان إكريليك حديثة.",
-                speech: "وهذه آخر لوحة تجريدية لشهد! تعبر عن المستقبل المشرق. والان هل أنتم جاهزون لخوض مسابقة المعرض؟ 🔥"
-            }
-        ];
-
-        const quizQuestions = [
-            {
-                question: "ما نوع الألوان المستخدمة في لوحة الطالبة سارة الأولى؟",
-                options: ["ألوان زيتية", "ألوان خشبية", "ألوان مائية", "فحم"],
-                correct: 0
-            },
-            {
-                question: "ما اسم الطالبة التي رسمت اللوحة التجريدية (رؤية مستقبلية)؟",
-                options: ["ريم عبد الله", "شهد خالد", "سارة محمد", "نورة العتيبي"],
-                correct: 1
-            },
-            {
-                question: "ما الخصائص الفنية البارزة في لوحة الطبيعة للجميلة ريم؟",
-                options: ["التصميم الهندسي", "ضربات الفرشاة الحرة والأكريليك", "الرسم بالأبيض والأسود", "النحت"],
-                correct: 1
+                speech: "وهذه آخر لوحة تجريدية لشهد! تعبر عن تطلعاتنا المستقبلية الزاهية والمشرقة."
             }
         ];
 
         let currentIndex = 0;
-        let quizScore = 0;
-        let currentQuestionIndex = 0;
         let synth = window.speechSynthesis;
         let isSpeaking = false;
 
         function showStep(stepId) {
-            ['entrance', 'gallery', 'quiz', 'leaderboard'].forEach(id => {
+            ['entrance', 'gallery'].forEach(id => {
                 document.getElementById(`step-${id}`).classList.add('hidden');
             });
             document.getElementById(`step-${stepId}`).classList.remove('hidden');
@@ -446,9 +345,9 @@
             const btnContainer = document.getElementById('next-btn-container');
             if (currentIndex === artworks.length - 1) {
                 btnContainer.innerHTML = `
-                    <button onclick="startQuizSection()" class="px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-extrabold text-xs md:text-sm rounded-xl shadow-xl flex items-center gap-2 transition transform hover:scale-105 animate-pulse">
-                        <i class="fa-solid fa-fire text-amber-300"></i>
-                        <span>الانتقال للمسابقة! 🎯</span>
+                    <button onclick="loadArtwork(0)" class="px-6 py-2.5 bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-white font-bold text-xs md:text-sm rounded-xl shadow-xl flex items-center gap-2 transition transform hover:scale-105">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>إعادة الجولة من البداية</span>
                     </button>
                 `;
             } else {
@@ -519,114 +418,6 @@
             }, 200);
             isSpeaking = false;
         }
-
-        function startQuizSection() {
-            stopSpeech();
-            showStep('quiz');
-            quizScore = 0;
-            currentQuestionIndex = 0;
-            document.getElementById('quiz-score').innerText = '0';
-            document.getElementById('quiz-box').classList.remove('hidden');
-            document.getElementById('quiz-result').classList.add('hidden');
-            loadQuestion();
-        }
-
-        function loadQuestion() {
-            const q = quizQuestions[currentQuestionIndex];
-            document.getElementById('question-number').innerText = `السؤال ${currentQuestionIndex + 1} من ${quizQuestions.length}`;
-            document.getElementById('question-text').innerText = q.question;
-
-            const optionsContainer = document.getElementById('quiz-options');
-            optionsContainer.innerHTML = '';
-
-            q.options.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.className = "w-full text-right p-3.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-500 rounded-xl text-xs md:text-sm text-slate-200 transition font-medium flex items-center justify-between group";
-                btn.innerHTML = `<span>${opt}</span> <i class="fa-regular fa-circle text-slate-500 group-hover:text-amber-400"></i>`;
-                btn.onclick = () => selectAnswer(idx);
-                optionsContainer.appendChild(btn);
-            });
-        }
-
-        function selectAnswer(selectedIndex) {
-            const q = quizQuestions[currentQuestionIndex];
-            if (selectedIndex === q.correct) {
-                quizScore += 10;
-                document.getElementById('quiz-score').innerText = quizScore;
-            }
-
-            if (currentQuestionIndex < quizQuestions.length - 1) {
-                currentQuestionIndex++;
-                loadQuestion();
-            } else {
-                finishQuiz();
-            }
-        }
-
-        function finishQuiz() {
-            document.getElementById('quiz-box').classList.add('hidden');
-            document.getElementById('quiz-result').classList.remove('hidden');
-            document.getElementById('final-score-display').innerText = quizScore;
-            
-            if (typeof confetti === 'function') {
-                confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
-            }
-        }
-
-        function savePlayerScore() {
-            const nameInput = document.getElementById('player-name').value.trim();
-            if (!nameInput) {
-                alert("لطفاً اكتبي اسمكِ لحفظ الترتيب!");
-                return;
-            }
-
-            let scores = JSON.parse(localStorage.getItem('museum_leaderboard') || '[]');
-            scores.push({
-                name: nameInput,
-                score: quizScore,
-                date: new Date().toLocaleDateString('ar-SA')
-            });
-
-            scores.sort((a, b) => b.score - a.score);
-            localStorage.setItem('museum_leaderboard', JSON.stringify(scores));
-
-            renderLeaderboard();
-            showStep('leaderboard');
-        }
-
-        function renderLeaderboard() {
-            let scores = JSON.parse(localStorage.getItem('museum_leaderboard') || '[]');
-            const tbody = document.getElementById('leaderboard-body');
-            tbody.innerHTML = '';
-
-            if (scores.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-slate-400">لا يوجد متصدرين بعد. كوني الأولى!</td></tr>`;
-                return;
-            }
-
-            scores.slice(0, 10).forEach((item, index) => {
-                let badge = `<span class="font-mono text-slate-400">#${index + 1}</span>`;
-                if (index === 0) badge = `<i class="fa-solid fa-crown text-amber-400 text-sm"></i>`;
-                if (index === 1) badge = `<i class="fa-solid fa-medal text-slate-300 text-sm"></i>`;
-                if (index === 2) badge = `<i class="fa-solid fa-award text-amber-600 text-sm"></i>`;
-
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-700/40 transition">
-                        <td class="py-3 px-4">${badge}</td>
-                        <td class="py-3 px-4 font-bold text-white">${item.name}</td>
-                        <td class="py-3 px-4 text-center font-bold text-emerald-400">${item.score}</td>
-                        <td class="py-3 px-4 text-left text-slate-400 text-[10px]">${item.date}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function restartMuseum() {
-            stopSpeech();
-            showStep('entrance');
-        }
-
-        renderLeaderboard();
     </script>
 </body>
 </html>
